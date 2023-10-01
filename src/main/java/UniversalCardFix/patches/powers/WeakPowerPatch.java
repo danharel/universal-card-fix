@@ -23,8 +23,11 @@ public class WeakPowerPatch {
     @SpirePatch(clz = WeakPower.class, method = "updateDescription")
     public static class UpdateDescription {
         public static void Replace(WeakPower __instance) {
-            int paperCranePercentage = Math.round(100 * PaperCranePatch.WEAK_PERCENTAGE);
-            __instance.description = __instance.amount == 1 ? (__instance.owner != null && !__instance.owner.isPlayer && AbstractDungeon.player.hasRelic("Paper Crane") ? __instance.DESCRIPTIONS[0] + paperCranePercentage + __instance.DESCRIPTIONS[1] + __instance.amount + __instance.DESCRIPTIONS[2] : __instance.DESCRIPTIONS[0] + 25 + __instance.DESCRIPTIONS[1] + __instance.amount + __instance.DESCRIPTIONS[2]) : (__instance.owner != null && !__instance.owner.isPlayer && AbstractDungeon.player.hasRelic("Paper Crane") ? __instance.DESCRIPTIONS[0] + paperCranePercentage + __instance.DESCRIPTIONS[1] + __instance.amount + __instance.DESCRIPTIONS[3] : __instance.DESCRIPTIONS[0] + 25 + __instance.DESCRIPTIONS[1] + __instance.amount + __instance.DESCRIPTIONS[3]);
+            bool usePaperCrane = __instance.owner != null && !__instance.owner.isPlayer && AbstractDungeon.player.hasRelic("Paper Crane");
+            int weakPercentage = usePaperCrane ? PaperCranePatch.WEAK_PERCENTAGE : 25;
+            int damageReduction = Math.round(100 * weakPercentage);
+            String suffix = __instance.amount == 1 ? __instance.DESCRIPTIONS[2] : __instance.DESCRIPTIONS[3];
+            __instance.description = String.format("%s%d%s%d%s", __instance.DESCRIPTIONS[0], damageReduction, __instance.DESCRIPTIONS[1], __instance.amount, suffix)
         }
     }
 }
